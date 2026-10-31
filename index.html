@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KHUSELA MARKET</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui}
+body{background:#FFF6E5;padding:12px}
+.top{text-align:center;padding:14px 6px 6px}
+.top h1{font-size:42px;letter-spacing:2px;background:linear-gradient(180deg,#2E7D32,#FFD700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:900}
+.hero{font-size:44px;text-align:center}
+.card{background:#fff;border:2px solid #FFE0B2;border-radius:18px;padding:14px;margin-bottom:12px;box-shadow:0 4px 12px rgba(0,0,0,.06)}
+.chat{background:#FFF3E0;border:1px dashed #FF9800;border-radius:14px;padding:10px;font-size:13px}
+input,textarea,select{width:100%;padding:11px;margin:6px 0;border-radius:12px;border:1px solid #ddd;background:#FFFDF7}
+.btn{border:0;padding:13px;border-radius:999px;font-weight:900;color:#fff;width:100%;margin-top:8px;cursor:pointer;font-size:15px}
+.green{background:#0E7A3D}.blue{background:#1565C0}.orange{background:#FF6D00}.dark{background:#111}
+.badge{display:inline-block;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:900}.g{background:#E8F5E9;color:#0E7A3D}
+.prod{border:1px solid #eee;border-radius:14px;padding:10px;margin-top:10px;background:#FFFEF9}
+.footer{background:linear-gradient(90deg,#FF9800,#2E7D32);color:#fff;text-align:center;padding:10px;border-radius:14px;font-size:12px;font-weight:700;margin-top:4px}
+</style></head><body>
+<div class="top"><h1>KHUSELA</h1><div class="hero">👧🏾👧🏾</div><p>Zara AI is helping you sell ✨</p></div>
+
+<div class="card"><b>💬 Zara AI chat assistant</b>
+<div class="chat" style="margin-top:8px"><b>Zara:</b> Hi! I can help you write this listing. Add photos, set price, and meet in public. We're here to keep it secure.</div>
+<div style="display:flex;gap:8px;margin-top:10px"><button class="btn green" style="flex:1" onclick="alert('Buy Safely mode: All payments locked in Zara Escrow')">BUY SAFELY</button><button class="btn orange" style="flex:1" onclick="document.getElementById('sell').scrollIntoView()">SELL SAFELY</button></div>
+</div>
+
+<div class="card" id="sell"><h2>✨ Create Listing</h2>
+<input id="pTitle" placeholder="Product name e.g. Handmade Beaded Bracelet">
+<input id="pPrice" type="number" placeholder="Price R e.g. 250">
+<input id="pLoc" placeholder="Location e.g. Johannesburg, Gauteng">
+<input id="pSeller" placeholder="Your Shop Name e.g. Zara Craft Store">
+<textarea id="pDesc" placeholder="Description... (Do NOT type EFT, WhatsApp, bank details - Zara will block it)" rows="3"></textarea>
+<button class="btn green" onclick="publish()">PUBLISH SAFELY ✓</button>
+<div id="warn" style="font-size:13px;color:#C62828;margin-top:8px"></div>
+</div>
+
+<div class="card"><h2>🛍️ Today's Market in Johannesburg</h2>
+<div class="prod"><b>🖐️ Handmade Beaded Bracelet - R250</b><br><span style="font-size:12px">Johannesburg, Gauteng • Zara Craft Store • <span class="badge g">Verified</span></span><br><button class="btn green" onclick="buy('Handmade Beaded Bracelet',250,'Zara Craft Store')">Buy with Zara Escrow</button></div>
+<div class="prod"><b>👟 Nike Sneakers - R1500</b><br><span style="font-size:12px">Soweto • Thabo • <span class="badge g">Verified</span></span><br><button class="btn green" onclick="buy('Nike Sneakers',1500,'Thabo')">Buy with Zara Escrow</button></div>
+<div class="prod"><b>📱 iPhone 12 - R6500</b><br><span style="font-size:12px">Sandton • Lerato • <span class="badge g">Verified</span></span><br><button class="btn green" onclick="buy('iPhone 12',6500,'Lerato')">Buy with Zara Escrow</button></div>
+<div id="myList"></div>
+</div>
+
+<div class="card"><h2>📜 Zara Audit Log</h2><div id="log" style="font-size:12px;white-space:pre-wrap;background:#FFF8E1;padding:10px;border-radius:10px">Waiting...</div></div>
+<div class="footer">Today in JHB • Escrow Active • Sunset 18:12 • Your payment is protected</div>
+
+<script>
+const ESCROW_URL="https://khusela-app.tiiny.site/";
+function log(m){document.getElementById('log').textContent=new Date().toLocaleTimeString()+' - '+m+'\n'+document.getElementById('log').textContent}
+function buy(item,price,seller){log(`BUY clicked ${item} R${price} seller ${seller} -> Escrow`);window.location.href=ESCROW_URL+`?item=${encodeURIComponent(item)}&amount=${price}&seller=${encodeURIComponent(seller)}`}
+function publish(){
+ let t=pTitle.value,pr=pPrice.value,d=pDesc.value||'',l=pLoc.value||'Johannesburg',s=pSeller.value||'You';
+ let bad=/eft|whatsapp|bank|account number|pay outside|dm me|call me/i.test(t+' '+d);
+ if(!t||!pr) return alert('Add title + price');
+ if(bad){warn.innerHTML='⚠️ Zara AI Warning: Scam words detected! Remove EFT / WhatsApp / bank details. Keep payments in KHUSELA.';log(`BLOCKED listing "${t}" - scam words`);return}
+ warn.innerHTML=''; 
+ myList.innerHTML=`<div class="prod"><b>${t} - R${pr}</b><br><span style="font-size:12px">${l} • ${s} • <span class="badge g">Just Published</span></span><br><button class="btn green" onclick="buy('${t}',${pr},'${s}')">Buy with Zara Escrow</button></div>`+myList.innerHTML;
+ log(`PUBLISHED SAFELY "${t}" R${pr} in ${l}`);
+ alert('Published Safely! Protected by Zara'); 
+}
+</script></body></html>
